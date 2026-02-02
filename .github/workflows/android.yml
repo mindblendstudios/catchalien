@@ -26,14 +26,15 @@ jobs:
             openjdk-17-jdk \
             unzip \
             wget \
-            libncurses5
+            libncurses6 \
+            libncurses-dev
 
       - name: Install Buildozer
         run: |
           pip install --upgrade pip
           pip install buildozer cython
 
-      - name: Accept Android SDK licenses
+      - name: Install Android SDK & accept licenses
         run: |
           yes | buildozer android update
 
