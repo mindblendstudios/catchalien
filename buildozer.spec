@@ -21,3 +21,9 @@ android.permissions = INTERNET
 
 android.skip_update = True
 android.use_legacy_python = 1
+
+- name: Set up Java 17
+  uses: actions/setup-java@v4
+  with:
+    distribution: 'temurin'
+    java-version: '17'
