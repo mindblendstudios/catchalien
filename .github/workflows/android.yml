@@ -1,8 +1,6 @@
-name: Build Android AAB
+name: Android Build
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -10,44 +8,38 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10.13"
 
-      - name: Install system dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y \
-            openjdk-17-jdk \
-            unzip \
-            wget \
-            libncurses6 \
-            libncurses-dev \
-            autoconf \
-            automake \
-            libtool \
-            pkg-config
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          git zip unzip openjdk-17-jdk \
+          python3-pip \
+          libffi-dev libssl-dev \
+          libncurses5
 
-      - name: Install Buildozer
-        run: |
-          pip install --upgrade pip
-          pip install buildozer cython
+    - name: Install Buildozer
+      run: |
+        pip install --upgrade pip
+        pip install buildozer cython==0.29.36
 
-      - name: Install Android SDK & NDK
-        run: |
-          yes | buildozer android update
-          sdkmanager "ndk;25.2.9519653"
+    - name: Clean cache
+      run: |
+        rm -rf ~/.buildozer
+        rm -rf .buildozer
 
-      - name: Build Android App Bundle
-        run: |
-          buildozer android release aab
+    - name: Build AAB
+      run: |
+        buildozer -v android release aab
 
-      - name: Upload AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: CatchAlien-AAB
-          path: bin/*.aab
+    - name: Upload AAB
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-aab
+        path: bin/*.aab
