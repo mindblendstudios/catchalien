@@ -24,7 +24,7 @@ class HomeScreen(Screen):
         )
 
         layout.add_widget(Image(
-            source='assets/iplogo.jpg',
+            source='iplogo.jpg',
             size_hint=(1, 0.3)
         ))
 
@@ -70,3 +70,4 @@ class CatchAlienApp(App):
 
 if __name__ == "__main__":
     CatchAlienApp().run()
+
