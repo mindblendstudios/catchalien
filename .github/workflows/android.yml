@@ -29,8 +29,7 @@ jobs:
           buildozer android release aab
 
       - name: Upload AAB Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: CatchAnAlien-AAB
           path: bin/*.aab
-
