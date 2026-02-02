@@ -21,7 +21,7 @@ class GameWidget(FloatLayout):
 
         # --- Background Image ---
         self.bg = Image(
-            source="assets/galaxy3.png",
+            source="galaxy3.png",
             allow_stretch=True,
             keep_ratio=False,
             size_hint=(1, 1),
@@ -36,7 +36,7 @@ class GameWidget(FloatLayout):
 
         # Background music
         self.bg_music = SoundLoader.load(
-            "assets/catchalienmusic.mp3"
+            "catchalienmusic.mp3"
         )
         if self.bg_music:
             self.bg_music.loop = True
@@ -62,7 +62,7 @@ class GameWidget(FloatLayout):
         # Create aliens
         for _ in range(ALIEN_COUNT):
             alien = Image(
-                source="assets/alien.png",
+                source="alien.png",
                 size_hint=(0.18, 0.18)
             )
             alien.bind(on_touch_down=self.catch_alien)
@@ -144,3 +144,4 @@ class GameWidget(FloatLayout):
         container.add_widget(final_label)
         container.add_widget(restart_btn)
         self.add_widget(container)
+
