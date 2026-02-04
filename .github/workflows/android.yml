@@ -14,54 +14,49 @@ jobs:
       ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: Set up Python 3.10
+    - name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: "3.10"
 
-    - name: Set up Java 17
+    - name: Setup Java 17
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: "17"
 
-    # ---------- ANDROID SDK FIX ----------
-    - name: Install Android SDK Command Line Tools
+    - name: Install Android SDK + AIDL
       run: |
         mkdir -p $ANDROID_HOME/cmdline-tools
         cd $ANDROID_HOME/cmdline-tools
 
-        curl -o tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+        curl -s https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o tools.zip
         unzip -q tools.zip
         mv cmdline-tools latest
 
         echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
-    - name: Install Android SDK Build Tools (AIDL fix)
-      run: |
         yes | sdkmanager --licenses
-        sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+        sdkmanager \
+          "platform-tools" \
+          "platforms;android-34" \
+          "build-tools;34.0.0" \
+          "ndk;25.2.9519653"
 
-    - name: Verify Android SDK
-      run: |
-        sdkmanager --version
         find $ANDROID_HOME -name aidl
 
-    # ---------- BUILD ----------
     - name: Install Buildozer
       run: |
         pip install --upgrade pip
         pip install buildozer cython
 
-    - name: Build Android AAB
+    - name: Build AAB
       run: |
-        buildozer android release aab
+        buildozer -v android release aab
 
-    # ---------- ARTIFACT ----------
-    - name: Upload AAB
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: CatchAnAlien-AAB
