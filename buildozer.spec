@@ -16,13 +16,9 @@ fullscreen = 1
 
 android.api = 34
 android.minapi = 23
+android.ndk = 25b
 
 # CRITICAL
-android.build_tools_version = 34.0.0
 android.archs = arm64-v8a, armeabi-v7a
-
-# Force internal SDK usage
-android.sdk_path =
-android.ndk_path =
 
 android.permissions = INTERNET
