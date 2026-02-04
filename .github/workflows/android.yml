@@ -9,6 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-22.04
 
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -24,11 +28,29 @@ jobs:
         distribution: temurin
         java-version: "17"
 
+    # ---------- ANDROID SDK FIX ----------
+    - name: Install Android SDK Command Line Tools
+      run: |
+        mkdir -p $ANDROID_HOME/cmdline-tools
+        cd $ANDROID_HOME/cmdline-tools
+
+        curl -o tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+        unzip -q tools.zip
+        mv cmdline-tools latest
+
+        echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
+
     - name: Install Android SDK Build Tools (AIDL fix)
       run: |
         yes | sdkmanager --licenses
         sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
+    - name: Verify Android SDK
+      run: |
+        sdkmanager --version
+        find $ANDROID_HOME -name aidl
+
+    # ---------- BUILD ----------
     - name: Install Buildozer
       run: |
         pip install --upgrade pip
@@ -38,6 +60,7 @@ jobs:
       run: |
         buildozer android release aab
 
+    # ---------- ARTIFACT ----------
     - name: Upload AAB
       uses: actions/upload-artifact@v4
       with:
