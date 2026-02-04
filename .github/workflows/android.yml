@@ -14,35 +14,30 @@ jobs:
       ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
 
     steps:
-    # 1️⃣ Checkout code
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    # 2️⃣ Python (Buildozer compatible)
-    - name: Setup Python 3.10
+    - name: Setup Python
       uses: actions/setup-python@v5
       with:
         python-version: "3.10"
 
-    # 3️⃣ Java 17 (REQUIRED for Android API 34+)
     - name: Setup Java 17
       uses: actions/setup-java@v4
       with:
         distribution: temurin
         java-version: "17"
 
-    # 4️⃣ Install Android SDK Command Line Tools (modern layout)
-    - name: Install Android SDK
+    # 🔥 FIXED ANDROID SDK INSTALL
+    - name: Install Android SDK + sdkmanager + aidl
       run: |
         sudo mkdir -p $ANDROID_HOME/cmdline-tools
         cd $ANDROID_HOME/cmdline-tools
 
-        curl -s https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o cmdline.zip
-        unzip -q cmdline.zip
-        mv cmdline-tools latest
+        curl -s https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o tools.zip
+        unzip -q tools.zip
 
-        echo "ANDROID_HOME=$ANDROID_HOME"
-        echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+        # IMPORTANT: rename folder correctly
+        mv cmdline-tools latest
 
         export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
 
@@ -56,29 +51,21 @@ jobs:
           "build-tools;34.0.0" \
           "ndk;25.2.9519653"
 
-        echo "🔍 Verifying AIDL"
+        # sanity check
+        which sdkmanager
         find $ANDROID_HOME -name aidl
 
-    # 5️⃣ Install Buildozer
     - name: Install Buildozer
       run: |
         pip install --upgrade pip
         pip install buildozer cython
 
-    # 6️⃣ Build Android App Bundle (.aab)
     - name: Build AAB
       run: |
-        export ANDROID_HOME=/usr/local/lib/android/sdk
-        export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
         export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
-
-        which sdkmanager
-        sdkmanager --version
-
         buildozer -v android release aab
 
-    # 7️⃣ Upload AAB artifact
-    - name: Upload AAB
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: CatchAnAlien-AAB
