@@ -48,10 +48,22 @@ jobs:
         run: |
           rm -rf ~/.buildozer/android
           rm -rf ~/.android
+     
+      - name: Install SDL2 & OpenGL dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            libsdl2-dev \
+            libsdl2-image-dev \
+            libsdl2-mixer-dev \
+            libsdl2-ttf-dev \
+            libgl1-mesa-dev \
+            libgles2-mesa-dev \
+            mesa-common-dev
 
       - name: Build Android AAB
         run: |
-          buildozer -v android release aab
+          buildozer -v android release aab --log_level=2
 
       - name: Upload AAB
         uses: actions/upload-artifact@v4
