@@ -1,4 +1,5 @@
 [app]
+
 title = Catch An Alien
 package.name = catchalien
 package.domain = org.manisha
@@ -8,27 +9,20 @@ source.include_exts = py,png,jpg,mp3
 
 version = 1.0
 
-requirements = python3,kivy
+requirements = python3==3.10,kivy,pyjnius==1.4.2
 
 orientation = portrait
 fullscreen = 1
 
-android.permissions = INTERNET
-android.skip_update = True
-
-# Android configuration
 android.api = 34
-android.minapi = 21
-android.ndk = 25b
+android.minapi = 23
 
-# CRITICAL — forces Buildozer to download build-tools (with aidl)
+# CRITICAL
 android.build_tools_version = 34.0.0
-
-# Required new syntax
 android.archs = arm64-v8a, armeabi-v7a
 
-# Prevent Buildozer guessing paths
+# Force internal SDK usage
 android.sdk_path =
 android.ndk_path =
 
-
+android.permissions = INTERNET
