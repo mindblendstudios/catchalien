@@ -1,6 +1,8 @@
 name: Build Android AAB
 
 on:
+  push:
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -8,24 +10,24 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up Python
+    - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: "3.10"
 
     - name: Set up Java 17
       uses: actions/setup-java@v4
       with:
-        distribution: 'temurin'
-        java-version: '17'
+        distribution: temurin
+        java-version: "17"
 
-    - name: Install system dependencies
+    - name: Install Android SDK Build Tools (AIDL fix)
       run: |
-        sudo apt update
-        sudo apt install -y zip unzip git openjdk-17-jdk
+        yes | sdkmanager --licenses
+        sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
     - name: Install Buildozer
       run: |
@@ -34,10 +36,10 @@ jobs:
 
     - name: Build Android AAB
       run: |
-        buildozer android release
+        buildozer android release aab
 
     - name: Upload AAB
       uses: actions/upload-artifact@v4
       with:
-        name: app-aab
+        name: CatchAnAlien-AAB
         path: bin/*.aab
