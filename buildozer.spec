@@ -26,4 +26,6 @@ android.skip_update = False
 android.sdk = 34
 android.build_tools_version = 34.0.0
 
+android.enable_androidx = True
+android.use_androidx = True
 
