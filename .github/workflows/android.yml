@@ -2,7 +2,7 @@ name: Build Android AAB
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -38,6 +39,11 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install buildozer cython
+
+      - name: Clean Buildozer Android cache
+        run: |
+          rm -rf ~/.buildozer/android
+          rm -rf ~/.android
 
       - name: Build Android AAB
         run: |
