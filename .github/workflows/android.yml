@@ -14,9 +14,10 @@ jobs:
       ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repo
+      uses: actions/checkout@v4
 
-    - name: Setup Python
+    - name: Setup Python 3.10
       uses: actions/setup-python@v5
       with:
         python-version: "3.10"
@@ -27,22 +28,29 @@ jobs:
         distribution: temurin
         java-version: "17"
 
-    # 🔥 FIXED ANDROID SDK INSTALL
-    - name: Install Android SDK + sdkmanager + aidl
+    - name: Install Android SDK Command Line Tools
       run: |
         sudo mkdir -p $ANDROID_HOME/cmdline-tools
         cd $ANDROID_HOME/cmdline-tools
 
         curl -s https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -o tools.zip
-        unzip -q tools.zip
+        sudo unzip -q tools.zip
+        sudo mv cmdline-tools latest
+        sudo rm tools.zip
 
-        # IMPORTANT: rename folder correctly
-        mv cmdline-tools latest
+        echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
-        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
+    - name: Fix sdkmanager path for Buildozer (CRITICAL)
+      run: |
+        sudo mkdir -p $ANDROID_HOME/tools/bin
+        sudo ln -sf \
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+          $ANDROID_HOME/tools/bin/sdkmanager
 
-        sdkmanager --version
+        ls -l $ANDROID_HOME/tools/bin/sdkmanager
 
+    - name: Install Android SDK components (AIDL, NDK, Build Tools)
+      run: |
         yes | sdkmanager --licenses
 
         sdkmanager \
@@ -51,21 +59,18 @@ jobs:
           "build-tools;34.0.0" \
           "ndk;25.2.9519653"
 
-        # sanity check
-        which sdkmanager
         find $ANDROID_HOME -name aidl
 
-    - name: Install Buildozer
+    - name: Install Buildozer & dependencies
       run: |
         pip install --upgrade pip
-        pip install buildozer cython
+        pip install buildozer cython==0.29.36
 
-    - name: Build AAB
+    - name: Build Android AAB
       run: |
-        export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
         buildozer -v android release aab
 
-    - name: Upload Artifact
+    - name: Upload AAB Artifact
       uses: actions/upload-artifact@v4
       with:
         name: CatchAnAlien-AAB
