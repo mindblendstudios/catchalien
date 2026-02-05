@@ -9,7 +9,7 @@ source.include_exts = py,png,jpg,mp3
 
 version = 1.0
 
-requirements = python3==3.10,kivy,pyjnius==1.4.2
+requirements = python3,kivy,pyjnius
 
 orientation = portrait
 fullscreen = 1
@@ -28,5 +28,6 @@ android.build_tools_version = 34.0.0
 
 android.enable_androidx = True
 android.use_androidx = True
+
 
 
