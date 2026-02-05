@@ -17,17 +17,20 @@ fullscreen = 1
 android.ndk = 25b
 android.api = 33
 android.minapi = 23
+android.ndk_api = 23
 
 # CRITICAL
 android.archs = arm64-v8a
 
 android.accept_sdk_license = True
+android.permissions = INTERNET
 android.skip_update = False
 android.sdk = 34
 android.build_tools_version = 34.0.0
 
 android.enable_androidx = True
 android.use_androidx = True
+
 
 
 
