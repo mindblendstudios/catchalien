@@ -56,7 +56,7 @@ jobs:
 
       - name: Build Android AAB
         env:
-          ANDROID_NDK_VERSION: r25b
+          ANDROID_NDK_VERSION: 25b
         run: |
           buildozer -v android release aab --log_level=2
 
