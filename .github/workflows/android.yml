@@ -32,7 +32,8 @@ jobs:
             libstdc++6 \
             libffi-dev \
             libssl-dev \
-            build-essential
+            build-essential \
+            openjdk-17-jdk
 
       - name: Install SDL2 & OpenGL dependencies
         run: |
@@ -57,10 +58,7 @@ jobs:
 
       - name: Build Android AAB
         env:
-          ANDROID_HOME: ""
-          ANDROID_SDK_ROOT: ""
-          ANDROID_NDK_HOME: ""
-          ANDROID_NDK_ROOT: ""
+          ANDROID_NDK_VERSION: r25b
         run: |
           buildozer -v android release aab --log_level=2
 
