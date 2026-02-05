@@ -51,10 +51,6 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython
 
-      - name: Show python-for-android version
-        run: |
-          python -c "import pythonforandroid; print(pythonforandroid.__version__)"
-
       - name: Clean Buildozer cache
         run: |
           rm -rf ~/.buildozer
